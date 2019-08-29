@@ -1,50 +1,145 @@
 import React from 'react';
 import Pt from 'prop-types';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 import Header from '../../components/Header/Header';
-import Input from '../../components/ui/Input/Input';
+import Radio from '../../components/ui/Radio/Radio';
+import Checkbox from '../../components/ui/Checkbox/Checkbox';
 import Button from '../../components/ui/Button/Button';
 
-import { Content } from './QuestionsPage.styled';
+import history from '../../containers/App/history';
+
+import { Content, CategoryTitle, QuestionText, DifficultyTitle } from './QuestionsPage.styled';
 
 import pollActions from '../../redux/modules/poll/actions';
 
-class WelcomePage extends React.Component {
+class QuestionsPage extends React.Component {
   constructor(props) {
     super(props);
 
+    const { pollData } = props;
+    const currentQuestion = pollData && pollData.find(item => item.id === '0');
+
     this.state = {
-      checkboxResult: null,
-      radioResult: null
+      checkboxResult: [],
+      radioResult: '',
+      currentQuestion,
     };
+  }
+
+  handleRadioChange = (e) => {
+    const { name } = e.target;
+
+    this.setState({
+      radioResult: name,
+    });
+  };
+
+  handleCheckboxChange = (e) => {
+    const { checkboxResult } = this.state;
+    const { name: value } = e.target;
+
+    if (checkboxResult.includes(value)) {
+      this.setState({
+        checkboxResult: checkboxResult.filter(item => item !== value),
+      });
+    } else {
+      this.setState({
+        checkboxResult: checkboxResult.concat(value),
+      });
+    }
+  };
+
+  handleSubmit = () => {
+    const { currentQuestion, checkboxResult, radioResult } = this.state;
+    const { setAnswer, pollData } = this.props;
+
+    const { id } = currentQuestion;
+    const isLastQuestion = +id === pollData.length - 1;
+
+    setAnswer({
+      id,
+      correct: currentQuestion.correct_answer,
+      difficulty: currentQuestion.difficulty,
+      question: currentQuestion.question,
+      result: currentQuestion.type === 'checkbox'
+        ? checkboxResult
+        : radioResult,
+    });
+
+    if (isLastQuestion) {
+      history.push('/results');
+    } else {
+      const newId = `${+id + 1}`;
+      const nextQuestion = pollData.find(item => item.id === newId);
+      this.setState({
+        checkboxResult: [],
+        radioResult: '',
+        currentQuestion: nextQuestion,
+      });
+    }
   }
 
   render() {
     const { pollData } = this.props;
-    const { apiAdressInput } = this.state;
-    return (<>
-      <Header title='Welcome' />
+    const { radioResult, checkboxResult, currentQuestion } = this.state;
+
+    const isSubmitDisabled = !radioResult && !checkboxResult.length;
+
+    if (!currentQuestion) {
+      return <Redirect to='/' />;
+    }
+
+    const isLastQuestion = currentQuestion.id === pollData.length - 1;
+    const questionId = +currentQuestion.id + 1;
+    return (<React.Fragment>
+      <Header title={`Question №${questionId}`} />
       <Content>
-        <Input
-          value={apiAdressInput}
-          onChange={this.handleInputChange}
-          placeholder='http://example.com'
-        />
+        <QuestionText>
+          {currentQuestion.question}
+        </QuestionText>
+        <CategoryTitle>
+          Category: {currentQuestion.category}
+        </CategoryTitle>
+        <DifficultyTitle type={currentQuestion.difficulty}>
+          Difficulty: {currentQuestion.difficulty}
+        </DifficultyTitle>
+        {
+          currentQuestion.type === 'checkbox'
+            ? (
+              <Checkbox
+                options={currentQuestion.variants}
+                checked={checkboxResult}
+                onChange={this.handleCheckboxChange}
+              />
+            )
+            : (
+              <Radio
+                options={currentQuestion.variants}
+                checked={radioResult}
+                onChange={this.handleRadioChange}
+              />
+            )
+        }
         <Button
-          onClick={this.handleSubmitInput}
-          disabled={fetching || !apiAdressInput}
+          onClick={this.handleSubmit}
+          disabled={isSubmitDisabled}
         >
-          Send poll request
+          {
+            !isLastQuestion
+              ? 'Next question'
+              : 'Show results'
+          }
         </Button>
       </Content>
-    </>);
+    </React.Fragment>);
   }
 }
 
-WelcomePage.propTypes = {
-  setResults: Pt.func.isRequired,
+QuestionsPage.propTypes = {
   pollData: Pt.array.isRequired,
+  setAnswer: Pt.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -52,7 +147,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  setAnswer: pollActions.setResult,
+  setAnswer: pollActions.setPollAnswer,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(WelcomePage);
+export default connect(mapStateToProps, mapDispatchToProps)(QuestionsPage);

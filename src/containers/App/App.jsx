@@ -6,6 +6,8 @@ import { Provider } from 'react-redux';
 import store from '../../redux';
 import history from './history';
 import WelcomePage from '../../pages/WelcomePage/WelcomePage';
+import QuestionsPage from '../../pages/QuestionsPage/QuestionsPage';
+import ResultPage from '../../pages/ResultPage/ResultPage';
 
 import { Layout, Content } from './App.styled';
 
@@ -16,7 +18,13 @@ const App = () => {
         <Content>
           <Router history={history}>
             <Switch>
-              <Route path='/' component={WelcomePage} />
+              <Route
+                exact
+                path='/'
+                component={WelcomePage}
+              />
+              <Route path='/questions' component={QuestionsPage} />
+              <Route path='/results' component={ResultPage} />
             </Switch>
           </Router>
         </Content>

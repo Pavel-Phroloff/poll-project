@@ -1,7 +1,7 @@
 import React from 'react';
 import Pt from 'prop-types';
 
-import InputStyled from './Input.styled';
+import { InputStyled } from './Input.styled';
 
 const Input = (props) => {
   return (

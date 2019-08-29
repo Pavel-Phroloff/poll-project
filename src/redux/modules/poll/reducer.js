@@ -20,7 +20,6 @@ const reducer = (state = initialState, action) => {
         fetching: true
       };
     case pollConstants.GET_POLL_SUCCESS:
-      console.log(action.payload);
       return {
         ...state,
         pollData: action.payload,
@@ -31,6 +30,11 @@ const reducer = (state = initialState, action) => {
         ...state,
         fetching: false,
         pollUrl: ''
+      };
+    case pollConstants.SET_POLL_ANSWER:
+      return {
+        ...state,
+        pollResult: state.pollResult.concat(action.payload)
       };
     default:
       return state;

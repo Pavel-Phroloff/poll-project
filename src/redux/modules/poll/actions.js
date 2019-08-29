@@ -18,8 +18,9 @@ const getPollFail = () => ({
   type: pollConstants.GET_POLL_FAIL,
 });
 
-const setResult = (answer) => ({
+const setPollAnswer = (answer) => ({
   type: pollConstants.SET_POLL_ANSWER,
+  payload: answer,
 });
 
 export default {
@@ -27,5 +28,5 @@ export default {
   getPollStart,
   getPollSuccess,
   getPollFail,
-  setResult,
+  setPollAnswer,
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import Pt from 'prop-types';
 
-import ButtonStyled from './Button.styled';
+import { ButtonStyled } from './Button.styled';
 
 const Button = (props) => {
   return (

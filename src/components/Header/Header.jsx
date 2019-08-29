@@ -13,5 +13,5 @@ const Header = ({ title }) => {
 
 Header.propTypes = {
   title: Pt.string
-}
+};
 export default Header;

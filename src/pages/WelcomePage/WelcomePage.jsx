@@ -16,7 +16,7 @@ class WelcomePage extends React.Component {
     super(props);
 
     this.state = {
-      apiAdressInput: props.pollUrl,
+      apiAdressInput: 'https://opentdb.com/api.php?amount=3'
     };
   }
 
@@ -41,7 +41,7 @@ class WelcomePage extends React.Component {
   render() {
     const { fetching } = this.props;
     const { apiAdressInput } = this.state;
-    return (<>
+    return (<React.Fragment>
       <Header title='Welcome' />
       <Content>
         <Input
@@ -56,7 +56,7 @@ class WelcomePage extends React.Component {
           Send poll request
         </Button>
       </Content>
-    </>);
+    </React.Fragment>);
   }
 }
 

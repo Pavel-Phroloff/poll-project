@@ -8,24 +8,25 @@ import pollActions from '../redux/modules/poll/actions';
 const shuffleArray = array => {
   const newArray = array.map(item => item);
 
-  for (let i = newArray.length - 1; i > 0; i--){
-    const j = Math.floor(Math.random() * newArray.length)
-    const temp = newArray[i]
-    newArray[i] = newArray[j]
-    newArray[j] = temp
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * newArray.length);
+    const temp = newArray[i];
+    newArray[i] = newArray[j];
+    newArray[j] = temp;
   }
 
   return newArray;
-}
+};
 
 const normilizePoll = poll => {
-  const mappedPoll = poll.map(question => {
-    const { incorrect_answers, ...rest } = question;
+  const mappedPoll = poll.map((question, key) => {
+    const { incorrect_answers: icorrectAnswers, ...rest } = question;
     return ({
       ...rest,
-      variants: shuffleArray(incorrect_answers.concat(rest.correct_answer))
-    })
-  })
+      id: `${key}`,
+      variants: shuffleArray(icorrectAnswers.concat(rest.correct_answer)),
+    });
+  });
   return mappedPoll;
 };
 
