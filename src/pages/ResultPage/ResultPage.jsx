@@ -2,6 +2,7 @@ import React from 'react';
 import Pt from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import _ from 'lodash';
 
 import Header from '../../components/Header/Header';
 import Button from '../../components/ui/Button/Button';
@@ -37,15 +38,20 @@ class ResultPage extends React.Component {
 
     return filteredResults.length
       ? (
-        <DifficultyBlockWrapper>
+        <DifficultyBlockWrapper key={difficultyType}>
           <DifficultyTitle type={difficultyType}>
             Difficulty: {difficultyType}
           </DifficultyTitle>
           {
             filteredResults.map(item => {
-              const inCorrect = item.result !== item.correct;
+              let inCorrect = false;
+              if (item.type === 'checkbox') {
+                inCorrect = item.result !== item.correct;
+              } else {
+                inCorrect = _.isEqual(_.sortBy(item.result), _.sortBy(item.correct));
+              }
               return (
-                <QuestionWrapper>
+                <QuestionWrapper key={item.id}>
                   <QuestionText incorrect={inCorrect}>
                     {item.question}
                   </QuestionText>

@@ -16,7 +16,7 @@ class WelcomePage extends React.Component {
     super(props);
 
     this.state = {
-      apiAdressInput: 'https://opentdb.com/api.php?amount=3'
+      pollUrlInput: 'https://opentdb.com/api.php?amount=3'
     };
   }
 
@@ -25,33 +25,33 @@ class WelcomePage extends React.Component {
     const { target: { value } } = e;
 
     this.setState({
-      apiAdressInput: value,
+      pollUrlInput: value,
     });
   }
 
   handleSubmitInput = () => {
     const { getPoll } = this.props;
-    const { apiAdressInput } = this.state;
-    getPoll(apiAdressInput);
+    const { pollUrlInput } = this.state;
+    getPoll(pollUrlInput);
     this.setState({
-      apiAdressInput: ''
+      pollUrlInput: ''
     });
   }
 
   render() {
     const { fetching } = this.props;
-    const { apiAdressInput } = this.state;
+    const { pollUrlInput } = this.state;
     return (<React.Fragment>
       <Header title='Welcome' />
       <Content>
         <Input
-          value={apiAdressInput}
+          value={pollUrlInput}
           onChange={this.handleInputChange}
           placeholder='http://example.com'
         />
         <Button
           onClick={this.handleSubmitInput}
-          disabled={fetching || !apiAdressInput}
+          disabled={fetching || !pollUrlInput}
         >
           Send poll request
         </Button>

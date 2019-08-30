@@ -20,31 +20,42 @@ const shuffleArray = array => {
 
 const normilizePoll = poll => {
   const mappedPoll = poll.map((question, key) => {
-    const { incorrect_answers: icorrectAnswers, ...rest } = question;
+    const { incorrect_answers: incorrectAnswers, ...rest } = question;
     return ({
       ...rest,
       id: `${key}`,
-      variants: shuffleArray(icorrectAnswers.concat(rest.correct_answer)),
+      variants: shuffleArray(incorrectAnswers.concat(rest.correct_answer)),
     });
   });
   return mappedPoll;
 };
 
-export default pollUrl => dispatch => {
+export default pollUrl => async dispatch => {
   dispatch(pollActions.setPollUrl(pollUrl));
 
   dispatch(pollActions.getPollStart());
-  axios.get(pollUrl)
-    .then(res => {
-      const data = normilizePoll(res.data.results);
-      dispatch(pollActions.getPollSuccess(data));
-      history.push('/questions');
-    })
-    .catch(() => {
-      dispatch(pollActions.getPollFail());
-      notification.error({
-        message: 'Request Error',
-        description: 'Please re-enter poll adress',
-      });
+  try {
+    const result = await axios.get(pollUrl);
+    const data = normilizePoll(result.data.results);
+    dispatch(pollActions.getPollSuccess(data));
+    history.push('/questions');
+  } catch (error) {
+    dispatch(pollActions.getPollFail());
+    notification.error({
+      message: 'Request Error',
+      description: 'Please re-enter poll adress',
     });
+  }
+  // .then(res => {
+  //   const data = normilizePoll(res.data.results);
+  //   dispatch(pollActions.getPollSuccess(data));
+  //   history.push('/questions');
+  // })
+  // .catch(() => {
+  //   dispatch(pollActions.getPollFail());
+  //   notification.error({
+  //     message: 'Request Error',
+  //     description: 'Please re-enter poll adress',
+  //   });
+  // });
 };
