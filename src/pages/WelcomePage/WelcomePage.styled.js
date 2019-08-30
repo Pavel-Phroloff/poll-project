@@ -5,3 +5,4 @@ export const Content = styled.div`
   justify-content: center;
   padding: 40px;
 `;
+
