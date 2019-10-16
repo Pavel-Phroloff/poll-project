@@ -46,16 +46,4 @@ export default pollUrl => async dispatch => {
       description: 'Please re-enter poll adress',
     });
   }
-  // .then(res => {
-  //   const data = normilizePoll(res.data.results);
-  //   dispatch(pollActions.getPollSuccess(data));
-  //   history.push('/questions');
-  // })
-  // .catch(() => {
-  //   dispatch(pollActions.getPollFail());
-  //   notification.error({
-  //     message: 'Request Error',
-  //     description: 'Please re-enter poll adress',
-  //   });
-  // });
 };
